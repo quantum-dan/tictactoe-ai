@@ -15,12 +15,20 @@ main = do
     print e
     putStrLn "--------------"
     print f
-    print $ findAllMoves f PX -}
+    print $ findAllMoves f PX
     print g
     putStrLn "---"
     print $ findAllMoves g PX
     putStrLn "---"
-    print $ getWinWeight g PX
+    print $ getWinWeight g PX -}
+    print c
+    print $ getTotalWinWeight c PX
+    print d
+    print $ getTotalWinWeight d PX
+    print g
+    print $ getTotalWinWeight g PX
+    print a
+    print $ getTotalWinWeight a PX
     where
         a = Board (Row X X X) (Row X O O) (Row E E X)
         b = Board (Row O X X) (Row X O X) (Row O E O)

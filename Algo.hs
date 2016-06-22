@@ -2,7 +2,9 @@ module Algo (
     winWeight,
     countWins,
     findAllMoves,
-    getWinWeight
+    getWinWeight,
+    getTotalWinWeight,
+    simulateOpponent,
     ) where
 import Core
 
@@ -23,3 +25,19 @@ findAllMoves board player = [ setByPosition board coords place | coords <- clist
 
 getWinWeight :: Board -> Player -> Int
 getWinWeight board player = countWins ( findAllMoves board player ) player
+
+simulateOpponent :: Board -> Player -> [Board]
+simulateOpponent board player = [ b | b <- findAllMoves board p, checkContinue b ]
+    where
+        p = case player of
+            PX  -> PO
+            PO  -> PX
+        checkContinue b = case determineWin b of -- Check that opponent has not won; if opponent has won we do not need to include it as a loss is 0
+            Nothing     -> True
+            (Just N)    -> True
+            _           -> False
+
+getTotalWinWeight :: Board -> Player -> Int
+getTotalWinWeight board player = case determineWin board of
+    Nothing     -> sum [ getTotalWinWeight b player | b <- simulateOpponent board player ]
+    _           -> winWeight board player

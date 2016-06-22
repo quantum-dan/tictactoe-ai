@@ -19,13 +19,19 @@ data Row = Row {
     left    :: Place,
     mid     :: Place,
     right   :: Place
-} deriving Show
+}
+
+instance Show Row where
+    show (Row l m r) = (show l) ++ " " ++ (show m) ++ " " ++ (show r)
 
 data Board = Board {
     top     :: Row,
     middle  :: Row,
     bottom  :: Row
-} deriving Show
+}
+
+instance Show Board where
+    show (Board t m b) = (show t) ++ "\n\n" ++ (show m) ++ "\n\n" ++ (show b) ++ "\n"
 
 getByPosition :: Board -> (Int, Int) -> Place
 getByPosition (Board t m b) (x, y) = selector (case y of

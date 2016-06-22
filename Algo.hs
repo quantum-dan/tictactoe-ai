@@ -10,11 +10,15 @@ module Algo (
     ) where
 import Core
 
+WINVAL = 2
+TIEVAL = 1
+LOSEVAL = 0
+
 winWeight :: Board -> Player -> Int
 winWeight board player = case determineWin board of
     Nothing     -> 0 -- Game is not over
-    (Just N)    -> 1 -- Tie
-    (Just p)    -> if p == player then 2 else 0 -- Lost
+    (Just N)    -> TIEVAL -- Tie
+    (Just p)    -> if p == player then WINVAL else LOSEVAL -- Lost
 
 countWins :: [Board] -> Player -> Int
 countWins boards player = sum [ winWeight board player | board <- boards ]

@@ -1,5 +1,6 @@
 import Core
 import Algo
+import AI
 
 main :: IO ()
 main = do
@@ -37,6 +38,8 @@ main = do
     print $ getTotalWinWeight f PX
     print h
     print $ getTotalWinWeight h PX -}
+    print $ runFullGame f PX
+    print $ runFullGame i PO
     where
         a = Board (Row X X X) (Row X O O) (Row E E X)
         b = Board (Row O X X) (Row X O X) (Row O E O)
@@ -45,3 +48,4 @@ main = do
         f = Board (Row E E E) (Row E E E) (Row E E E)
         g = Board (Row X E X) (Row E X E) (Row E E E)
         h = Board (Row X O X) (Row E O X) (Row E E E)
+        i = Board (Row E E E) (Row E X E) (Row E E E)

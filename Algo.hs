@@ -1,6 +1,8 @@
 module Algo (
     winWeight,
-    countWins
+    countWins,
+    findAllMoves,
+    getWinWeight
     ) where
 import Core
 
@@ -12,3 +14,12 @@ winWeight board player = case determineWin board of
 
 countWins :: [Board] -> Player -> Int
 countWins boards player = sum [ winWeight board player | board <- boards ]
+
+findAllMoves :: Board -> Player -> [Board]
+findAllMoves board player = [ setByPosition board coords place | coords <- clist, getByPosition board coords == E ]
+    where
+        clist = zip [1, 1, 1, 2, 2, 2, 3, 3, 3] [1, 2, 3, 1, 2, 3, 1, 2, 3]
+        place = getPlace player
+
+getWinWeight :: Board -> Player -> Int
+getWinWeight board player = countWins ( findAllMoves board player ) player

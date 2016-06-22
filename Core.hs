@@ -9,17 +9,23 @@ data Player = PX | PO | N
     deriving (Show, Eq)
 -- N is to be used only for a full board where no one has won
 
+getPlace :: Player -> Place
+getPlace player = case player of
+    PX -> X
+    PO -> O
+    N -> E
+
 data Row = Row {
     left    :: Place,
     mid     :: Place,
     right   :: Place
-}
+} deriving Show
 
 data Board = Board {
     top     :: Row,
     middle  :: Row,
     bottom  :: Row
-}
+} deriving Show
 
 getByPosition :: Board -> (Int, Int) -> Place
 getByPosition (Board t m b) (x, y) = selector (case y of
@@ -35,6 +41,13 @@ getByPosition (Board t m b) (x, y) = selector (case y of
 setByPosition :: Board -> (Int, Int) -> Place -> Board
 setByPosition (Board t m b) (x, y) place = Board t' m' b'
     where
+        substitute (Row l m r) x = Row
+            (if x == 1 then place else l)
+            (if x == 2 then place else m)
+            (if x == 3 then place else r)
+        t' = if y == 1 then substitute t x else t
+        m' = if y == 2 then substitute m x else m
+        b' = if y == 3 then substitute b x else b
 
 placeIsFull :: Place -> Bool
 placeIsFull E = False
@@ -66,10 +79,7 @@ findColumn (Board t m b) place =
 findPath :: Board -> Player -> Bool
 findPath board player = (findDiag board p) || (findRow board p) || (findColumn board p)
     where
-        p = case player of
-            PX -> X
-            PO -> O
-            _ -> E
+        p = getPlace player
 
 determineWin :: Board -> Maybe Player -- Just Player if won or full, Nothing if no one has won and there are free spots
 determineWin board

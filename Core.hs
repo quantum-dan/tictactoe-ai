@@ -15,6 +15,12 @@ getPlace player = case player of
     PO -> O
     N -> E
 
+switchPlayer :: Player -> Player
+switchPlayer player = case player of
+    PX -> PO
+    PO -> PX
+    N  -> N
+
 data Row = Row {
     left    :: Place,
     mid     :: Place,

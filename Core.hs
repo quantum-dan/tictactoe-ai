@@ -39,6 +39,9 @@ data Board = Board {
 instance Show Board where
     show (Board t m b) = (show t) ++ "\n\n" ++ (show m) ++ "\n\n" ++ (show b) ++ "\n"
 
+emptyBoard :: Board
+emptyBoard = Board (Row E E E) (Row E E E) (Row E E E)
+
 getByPosition :: Board -> (Int, Int) -> Place
 getByPosition (Board t m b) (x, y) = selector (case y of
     1 -> t

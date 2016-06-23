@@ -14,10 +14,13 @@ makeMove board player = maxBoard boardList
         boardList = [ (getTotalWinWeight b player, b) | b <- findAllMoves board player ]
         maxBoard boards = snd $ maxBoard' boards
             where
-                maxBoard' (b:boards) = let b' = maxBoard' boards in
-                    if fst b > fst b' then b
-                    else b'
-                maxBoard' [] = (0, Board (Row E E E) (Row E E E) (Row E E E))
+                maxBoard' (b:boards) = if winWeight (snd b) player == 2
+                    then b
+                    else
+                        let b' = maxBoard' boards in
+                            if fst b > fst b' then b
+                            else b'
+                maxBoard' [] = (0, emptyBoard)
 
 runFullGame :: Board -> Player -> Board
 runFullGame board player = if checkGameOver board then board

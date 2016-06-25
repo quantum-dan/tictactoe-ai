@@ -4,10 +4,10 @@ This is a project to develop a working Tic Tac Toe AI.  I will start with a very
 ## Current
 Currently, the AI looks at each possible moves and computes the total win weight of each, choosing the move with the greatest win weight.  This is overridden if a possible move will win, in which case it makes that move.
 
-The win weight is the total of all possible win, tie and lose outcomes for the game continuing from the result of a given move.  The weight of win, tie and lose are set in the Algo module.
+The win weight is the total of all possible win, tie and lose outcomes for the game continuing from the result of a given move.  Win, Tie and Lose are now associated with the WinP, TieP and LoseP Patterns in the Algo module.
 
 ## Next
-The next step will be to have an AI which, instead of calculating all possible games, looks ahead a few steps for patterns indicative of likely wins.  With this version, the difficulty can be varied by setting the number of moves it looks ahead for, and by setting how many patterns it looks for.
+The next step will be to have an AI which, instead of calculating all possible games, looks ahead a few steps for patterns indicative of likely wins.  With this version, the difficulty can be varied by setting the number of moves it looks ahead, and by setting how many patterns it looks for.
 
 ## Overview
 

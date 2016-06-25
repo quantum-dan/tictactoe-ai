@@ -7,6 +7,11 @@ module Algo (
     simulateOpponent,
     findAllOutcomes,
     checkGameOver,
+    PatternType,
+    Pattern,
+    getPatternType,
+    checkPattern,
+    patterns,
     ) where
 import Core
 
@@ -14,14 +19,46 @@ winval = 2
 tieval = 1
 loseval = 0
 
+data PatternType = WIN | TIE | LOSE | LIKELYWIN | LIKELYLOSE | NEUTRAL
+winVal :: PatternType -> Int
+-- Use this to modify how aggressively the AI plays, in theory
+winVal patternType = case patternType of -- Clearer than a long list of pattern matches
+    WIN         -> 5
+    TIE         -> 0
+    LOSE        -> -5
+    LIKELYWIN   -> 2
+    LIKELYLOSE  -> -2
+    NEUTRAL     -> 0
+
+data Pattern = WinP | TieP | LoseP
+patterns :: [Pattern]
+patterns = [WinP, TieP, LoseP]
+
+getPatternType :: Pattern -> PatternType
+getPatternType pattern = case pattern of -- Case instead of pattern match for readability
+    WinP        -> WIN
+    TieP        -> TIE
+    LoseP       -> LOSE
+
+checkPattern :: Board -> Player -> Pattern -> Bool
+checkPattern board player pattern = case pattern of
+    WinP        -> winWeight board player == winVal WIN
+    LoseP       -> winWeight board player == winVal LOSE
+    TieP        -> determineWin board == Just N
+
+patternWeight :: Board -> Player -> Int
+patternWeight board player = sum [ winVal $ getPatternType p | p <- patterns, checkPattern board player p ]
+
 winWeight :: Board -> Player -> Int
-winWeight board player = case determineWin board of
-    Nothing     -> 0 -- Game is not over
-    (Just N)    -> tieval -- Tie
-    (Just p)    -> if p == player then winval else loseval -- Lost
+winWeight board player = winVal $ case determineWin board of
+    Nothing     -> NEUTRAL -- Game is not over
+    (Just N)    -> TIE -- Tie
+    (Just p)    -> if p == player then WIN else LOSE -- Lost
 
 countWins :: [Board] -> Player -> Int
 countWins boards player = sum [ winWeight board player | board <- boards ]
+
+-- winPatternsWeight :: Board -> Player -> Int
 
 findAllMoves :: Board -> Player -> [Board]
 findAllMoves board player = [ setByPosition board coords place | coords <- clist, getByPosition board coords == E ]
@@ -57,4 +94,4 @@ findAllOutcomes board player = if checkGameOver board then [board]
         continueOutcomes = concat [ findAllOutcomes outcome $ switchPlayer player | outcome <- allOutcomes, not (checkGameOver outcome) ]
 
 getTotalWinWeight :: Board -> Player -> Int
-getTotalWinWeight board player = sum [ winWeight b player | b <- findAllOutcomes board player ]
+getTotalWinWeight board player = sum [ patternWeight b player | b <- findAllOutcomes board player ]

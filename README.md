@@ -6,6 +6,9 @@ Currently, the AI looks at each possible moves and computes the total win weight
 
 The win weight is the total of all possible win, tie and lose outcomes for the game continuing from the result of a given move.  The weight of win, tie and lose are set in the Algo module.
 
+## This Branch
+This branch is storing the first version with a functional AI.
+
 ## Next
 The next step will be to have an AI which, instead of calculating all possible games, looks ahead a few steps for patterns indicative of likely wins.  With this version, the difficulty can be varied by setting the number of moves it looks ahead for, and by setting how many patterns it looks for.
 

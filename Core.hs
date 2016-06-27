@@ -25,7 +25,7 @@ data Row = Row {
     left    :: Place,
     mid     :: Place,
     right   :: Place
-}
+} deriving Eq
 
 instance Show Row where
     show (Row l m r) = (show l) ++ " " ++ (show m) ++ " " ++ (show r)
@@ -34,7 +34,7 @@ data Board = Board {
     top     :: Row,
     middle  :: Row,
     bottom  :: Row
-}
+} deriving Eq
 
 instance Show Board where
     show (Board t m b) = (show t) ++ "\n\n" ++ (show m) ++ "\n\n" ++ (show b) ++ "\n"

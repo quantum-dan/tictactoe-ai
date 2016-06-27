@@ -8,13 +8,16 @@ module AI (
 import Core
 import Algo
 
+movesAhead = 3
+
 makeMove :: Board -> Player -> Board -- Makes the move with the highest total win weight, and returns the updated board
-makeMove board player = maxBoard boardList
+makeMove board player = maxBoard boardList'
     where
         boardList = [ (getTotalWinWeight b player, b) | b <- findAllMoves board player ]
+        boardList' = [ (getTotalPatternWeight b player (switchPlayer player) movesAhead, b) | b <- findAllMoves board player ]
         maxBoard boards = snd $ maxBoard' boards
             where
-                maxBoard' (b:boards) = if winWeight (snd b) player == 2
+                maxBoard' (b:boards) = if checkPattern (snd b) player WinP
                     then b
                     else
                         let b' = maxBoard' boards in

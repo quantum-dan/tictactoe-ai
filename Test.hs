@@ -38,8 +38,8 @@ main = do
     print $ getTotalWinWeight f PX
     print h
     print $ getTotalWinWeight h PX -}
-    print $ runFullGame f PX
-    print $ runFullGame i PO
+    print $ getTotalPatternWeight f PX PX 9
+    print $ getTotalWinWeight f PX
     where
         a = Board (Row X X X) (Row X O O) (Row E E X)
         b = Board (Row O X X) (Row X O X) (Row O E O)

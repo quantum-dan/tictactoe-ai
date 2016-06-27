@@ -7,11 +7,13 @@ module Algo (
     simulateOpponent,
     findAllOutcomes,
     checkGameOver,
-    PatternType,
-    Pattern,
+    PatternType (WIN, TIE, LOSE, LIKELYWIN, LIKELYLOSE, NEUTRAL),
+    Pattern (WinP, TieP, LoseP),
     getPatternType,
     checkPattern,
     patterns,
+    patternWeight,
+    getTotalPatternWeight,
     ) where
 import Core
 
@@ -49,6 +51,12 @@ checkPattern board player pattern = case pattern of
 patternWeight :: Board -> Player -> Int
 patternWeight board player = sum [ winVal $ getPatternType p | p <- patterns, checkPattern board player p ]
 
+getTotalPatternWeight :: Board -> Player -> Player -> Int -> Int
+-- Get total pattern weight looking n moves ahead, where the player moving in the given turn is move
+getTotalPatternWeight board player move n = if n == 0 || checkGameOver board
+    then patternWeight board player
+    else sum [ getTotalPatternWeight b player (switchPlayer move) (n - 1) | b <- findAllMoves board move ]
+
 winWeight :: Board -> Player -> Int
 winWeight board player = winVal $ case determineWin board of
     Nothing     -> NEUTRAL -- Game is not over
@@ -70,15 +78,7 @@ getWinWeight :: Board -> Player -> Int
 getWinWeight board player = countWins ( findAllMoves board player ) player
 
 simulateOpponent :: Board -> Player -> [Board]
-simulateOpponent board player = [ b | b <- findAllMoves board p, checkContinue b ]
-    where
-        p = case player of
-            PX  -> PO
-            PO  -> PX
-        checkContinue b = case determineWin b of -- Check that opponent has not won; if opponent has won we do not need to include it as a loss is 0
-            Nothing     -> True
-            (Just N)    -> True
-            _           -> False
+simulateOpponent board player = [ b | b <- findAllMoves board $ switchPlayer player ]
 
 checkGameOver :: Board -> Bool -- Determine if the game is over, based on determineWin
 checkGameOver board = case determineWin board of

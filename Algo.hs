@@ -21,20 +21,23 @@ winval = 2
 tieval = 1
 loseval = 0
 
-data PatternType = WIN | TIE | LOSE | LIKELYWIN | LIKELYLOSE | NEUTRAL
+data PatternType = WIN | TIE | LOSE | LIKELYWIN | LIKELYLOSE | NEUTRAL | STRONGLW | STRONGLL
 winVal :: PatternType -> Int
 -- Use this to modify how aggressively the AI plays, in theory
 winVal patternType = case patternType of -- Clearer than a long list of pattern matches
     WIN         -> 5
     TIE         -> 0
     LOSE        -> -5
-    LIKELYWIN   -> 2
+    LIKELYWIN   -> 2 -- A possible winning position
     LIKELYLOSE  -> -2
     NEUTRAL     -> 0
+    STRONGLW    -> 4
+    STRONGLL    -> 4 -- Pretty much about to win, assuming the opponent doesn't win first
 
-data Pattern = WinP | TieP | LoseP | LikelyWP | LikelyLP
+data Pattern = WinP | TieP | LoseP | LikelyWP | LikelyLP | StrongWP | StrongLP
 patterns :: [Pattern]
-patterns = [WinP, TieP, LoseP, LikelyWP, LikelyLP]
+patterns = [WinP, TieP, LoseP, StrongWP, StrongLP, LikelyWP, LikelyLP]
+-- It's redundant, but it allows for multiple Patterns per PatternType if needed
 
 getPatternType :: Pattern -> PatternType
 getPatternType pattern = case pattern of -- Case instead of pattern match for readability
@@ -43,11 +46,17 @@ getPatternType pattern = case pattern of -- Case instead of pattern match for re
     LoseP       -> LOSE
     LikelyWP    -> LIKELYWIN
     LikelyLP    -> LIKELYLOSE
+    StrongWP    -> STRONGLW
+    StrongLP    -> STRONGLL
 
 checkLWP :: Board -> Player -> Bool
 checkLWP board player = if not (checkPattern board player WinP || checkPattern board player LoseP)
     then foldr (||) False [ countPos r player == 2 && countPos r N == 1 | r <- [ top board, middle board, bottom board, getDiag board LMR, getDiag board RML ] ]
     else False
+
+checkSWP :: Board -> Player -> Bool
+checkSWP board player = (not (checkPattern board player WinP || checkPattern board player LoseP)) &&
+    (foldr (\x y -> (if x then 1 else 0) + y) 0 [ countPos r player == 2 && countPos r N == 1 | r <- [ top board, middle board, bottom board, getDiag board LMR, getDiag board RML ] ] > 1)
 
 checkPattern :: Board -> Player -> Pattern -> Bool
 checkPattern board player pattern = case pattern of
@@ -56,6 +65,8 @@ checkPattern board player pattern = case pattern of
     TieP        -> determineWin board == Just N
     LikelyWP    -> checkLWP board player
     LikelyLP    -> checkLWP board $ switchPlayer player
+    StrongWP    -> checkSWP board player
+    StrongLP    -> checkSWP board $ switchPlayer player
 
 patternWeight :: Board -> Player -> Int
 patternWeight board player = sum [ winVal $ getPatternType p | p <- patterns, checkPattern board player p ]

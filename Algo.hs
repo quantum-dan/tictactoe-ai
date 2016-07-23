@@ -32,21 +32,30 @@ winVal patternType = case patternType of -- Clearer than a long list of pattern 
     LIKELYLOSE  -> -2
     NEUTRAL     -> 0
 
-data Pattern = WinP | TieP | LoseP
+data Pattern = WinP | TieP | LoseP | LikelyWP | LikelyLP
 patterns :: [Pattern]
-patterns = [WinP, TieP, LoseP]
+patterns = [WinP, TieP, LoseP, LikelyWP, LikelyLP]
 
 getPatternType :: Pattern -> PatternType
 getPatternType pattern = case pattern of -- Case instead of pattern match for readability
     WinP        -> WIN
     TieP        -> TIE
     LoseP       -> LOSE
+    LikelyWP    -> LIKELYWIN
+    LikelyLP    -> LIKELYLOSE
+
+checkLWP :: Board -> Player -> Bool
+checkLWP board player = if not (checkPattern board player WinP || checkPattern board player LoseP)
+    then foldr (||) False [ countPos r player == 2 && countPos r N == 1 | r <- [ top board, middle board, bottom board, getDiag board LMR, getDiag board RML ] ]
+    else False
 
 checkPattern :: Board -> Player -> Pattern -> Bool
 checkPattern board player pattern = case pattern of
     WinP        -> winWeight board player == winVal WIN
     LoseP       -> winWeight board player == winVal LOSE
     TieP        -> determineWin board == Just N
+    LikelyWP    -> checkLWP board player
+    LikelyLP    -> checkLWP board $ switchPlayer player
 
 patternWeight :: Board -> Player -> Int
 patternWeight board player = sum [ winVal $ getPatternType p | p <- patterns, checkPattern board player p ]

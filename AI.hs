@@ -8,7 +8,7 @@ module AI (
 import Core
 import Algo
 
-movesAhead = 10
+movesAhead = 3
 
 makeMove :: Board -> Player -> Board -- Makes the move with the highest total win weight, and returns the updated board
 makeMove board player = maxBoard boardList'
@@ -23,7 +23,7 @@ makeMove board player = maxBoard boardList'
                         let b' = maxBoard' boards in
                             if fst b > fst b' then b
                             else b'
-                maxBoard' [] = (0, emptyBoard)
+                maxBoard' [] = (-10000000000, emptyBoard)
 
 runFullGame :: Board -> Player -> Board
 runFullGame board player = if checkGameOver board then board

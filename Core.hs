@@ -39,6 +39,8 @@ data Board = Board {
 instance Show Board where
     show (Board t m b) = (show t) ++ "\n\n" ++ (show m) ++ "\n\n" ++ (show b) ++ "\n"
 
+data Diagonal = LMR | RML deriving (Show, Eq) -- Left-middle-right or Right-middle-left, from the top down
+
 emptyBoard :: Board
 emptyBoard = Board (Row E E E) (Row E E E) (Row E E E)
 
@@ -73,6 +75,16 @@ rowIsFull (Row l m r) = placeIsFull l && placeIsFull m && placeIsFull r
 
 boardIsFull :: Board -> Bool
 boardIsFull (Board t m b) = rowIsFull t && rowIsFull m && rowIsFull b
+
+getDiag :: Board -> Diagonal -> Row
+getDiag board LMR = Row (getByPosition board (1, 1)) (getByPosition board (2, 2)) (getByPosition board (3, 3))
+getDiag board RML = Row (getByPosition board (3, 1)) (getByPosition board (2, 2)) (getByPosition board (1, 3))
+
+checkPosInt :: Place -> Place -> Int
+checkPosInt place1 place2 = if place1 == place2 then 1 else 0
+
+countPos :: Row -> Player -> Int
+countPos row player = sum [ checkPosInt p $ getPlace player | p <- [ left row, mid row, right row ] ]
 
 findDiag :: Board -> Place -> Bool
 findDiag (Board t m b) place =

@@ -6,8 +6,7 @@ Currently, the AI looks at each possible moves and computes the total win weight
 
 The win weight is the total of all possible win, tie and lose outcomes for the game continuing from the result of a given move.  Win, Tie and Lose are now associated with the WinP, TieP and LoseP Patterns in the Algo module.
 
-## Next
-The next step will be to have an AI which, instead of calculating all possible games, looks ahead a few steps for patterns indicative of likely wins.  With this version, the difficulty can be varied by setting the number of moves it looks ahead, and by setting how many patterns it looks for.
+The AI also looks for certain "likely win" patterns: two positions held in a row, column or diagonal with the third empty is a Likely Win pattern; two or more Likely Wins make a Strong Likely Win.
 
 ## Overview
 
